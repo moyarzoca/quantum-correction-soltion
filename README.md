@@ -1,6 +1,6 @@
 # Eigenvalue tracking for a quantum soliton ODE
 
-Finds eigenvalues λ of a second-order linear ODE depending on parameters `k` (wavenumber), `n` (quantum number), and `λ` (eigenvalue), and tracks them as `k` varies.
+Finds eigenvalues λ of a second-order linear ODE depending on parameters `k` (wavenumber), `n` (Matsubara mode), and `λ` (eigenvalue), and tracks them as `k` varies.
 
 ## ODE
 
@@ -10,7 +10,7 @@ P₂(z) F''(z) + P₁(z) F'(z) + P₀(z; λ, n, k) F(z) = 0
 
 with Dirichlet boundary condition `F(z₁) = 0` at the right endpoint. The coefficients `P₀, P₁, P₂` are polynomials in `z` derived from the physical model. `λ` enters linearly in `P₀`, and `n` enters up to quadratically in `P₀`.
 
-The integration domain is `z ∈ [z₀, z₁]` where `z₀ ≈ 10⁻⁵` and `z₁ = 1 − offset`. Both endpoints are regular singular points of the ODE.
+The integration domain is `z ∈ [z₀, z₁]` where `z₀ ≈ 10⁻⁵` and `z₁ = 1 − offset`.
 
 ## Methodology
 
@@ -26,7 +26,7 @@ The integration domain is `z ∈ [z₀, z₁]` where `z₀ ≈ 10⁻⁵` and `z�
 solver/
 ├── config.wl              — Stage presets and λ-window defaults
 ├── eigenvalues.wl         — Main orchestrator script
-├── plot.wl                — Post-processing: load .m files and plot λ(k)
+├── plot.wl                — Post-processing: load .m files and plot λ(k) [Note yet wired]
 ├── tools/
 │   ├── equation.wl        — ODE coefficients P₀,P₁,P₂, Equ, makeFrobeniusSolver
 │   ├── modes.wl           — FindFirstLamb, RefineFindFirstLamb, makeKGrid, trackMode
