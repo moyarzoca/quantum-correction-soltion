@@ -1,20 +1,21 @@
 FindFirstLamb[n_, k_, lambWindow_, stage_, frob_] := Module[
-  {prec, kp, lambMin, lambMax, lambInterval, Npoints, listlamb, solLamb, interp},
+	{prec, kp, lambMin, lambMax, lambInterval, Npoints, listlamb, solLamb, interp},
 
-  prec = stage["prec"];
-  kp = SetPrecision[k, prec];
-  {lambMin, lambMax} = lambWindow["center"] + {-1, 1} * lambWindow["width"]/2;
-  Npoints = lambWindow["Npoints"];
-  lambInterval = Subdivide[lambMin, lambMax, Npoints];
-  listlamb = Table[{lam, SOL3[lam, n, kp, frob, stage]}, {lam, lambInterval}];
+	prec = stage["prec"];
+	kp = SetPrecision[k, prec];
+	lambMin = lambWindow["center"] - lambWindow["width"]/2;
+	lambMax = lambWindow["center"] + lambWindow["width"]/2;
+	Npoints = lambWindow["Npoints"];
+	lambInterval = Subdivide[lambMin, lambMax, Npoints];
+	listlamb = Table[{lam, SOL3[lam, n, kp, frob, stage]}, {lam, lambInterval}];
 
-  interp = Interpolation[listlamb];
-  solLamb = FindRoot[interp[lamb], {lamb, lambWindow["center"]}];
-  Print["  partial λ = ", (lamb /. solLamb), "  k = ", N[k], "  n = ", n];
+	interp = Interpolation[listlamb];
+	solLamb = FindRoot[interp[lamb], {lamb, lambWindow["center"]}];
+	Print["  partial λ = ", (lamb /. solLamb), "  k = ", N[k], "  n = ", n];
 
-  (*Print[Image[ListPlot[listlamb]]];*)
+	(*Print[Image[ListPlot[listlamb]]];*)
 
-  Which[
+	Which[
 	solLamb === {},
 		Failure["NoRoot", <|"grid" -> listlamb|>],
 	lambMin <= (lamb /. solLamb) <= lambMax,
@@ -22,22 +23,22 @@ FindFirstLamb[n_, k_, lambWindow_, stage_, frob_] := Module[
 	True,
 		Print["OutOfRange!!!!"];
 		Failure["OutOfRange", <|"grid" -> listlamb, "root" -> lamb /. solLamb|>]
-  ]
+	]
 ];
 
 
 
 
 RefineFindFirstLamb[n_, k_, lambWindow_, stage1_, stage2_, frob1_, frob2_: Automatic] := Module[
-  {first, refinedWindow},
-  first = FindFirstLamb[n, k, lambWindow, stage1, frob1];
-  If[FailureQ[first], Return[first]];
-  refinedWindow = <|
-    "center" -> first["lambda"],
-    "width" -> lambWindow["width"] / 6,
-    "Npoints" -> lambWindow["Npoints"]
-  |>;
-  FindFirstLamb[n, k, refinedWindow, stage2, Replace[frob2, Automatic -> frob1]]
+	{first, refinedWindow},
+	first = FindFirstLamb[n, k, lambWindow, stage1, frob1];
+	If[FailureQ[first], Return[first]];
+	refinedWindow = <|
+		"center" -> first["lambda"],
+		"width" -> lambWindow["width"] / 6,
+		"Npoints" -> lambWindow["Npoints"]
+	|>;
+	FindFirstLamb[n, k, refinedWindow, stage2, Replace[frob2, Automatic -> frob1]]
 ]; 
 
 makeKGrid[kStart_, stepSize_, nPoints_] := Subdivide[kStart, kStart - stepSize*nPoints, nPoints];
