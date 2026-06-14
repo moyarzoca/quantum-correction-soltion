@@ -71,15 +71,18 @@ FindFirstLamb[n_, k_, lambWindow_, stage_, frob_] := Module[
 
   interp = Interpolation[listlamb];
   solLamb = FindRoot[interp[lamb], {lamb, lambWindow["center"]}];
-  Print[solLamb];
+  Print[(lamb /. solLamb)];
+
+  (*Print[Image[ListPlot[listlamb]]];*)
 
   Which[
-    solLamb === {},
-      Failure["NoRoot", <|"grid" -> listlamb|>],
-    lambMin <= (lamb /. solLamb) <= lambMax,
-      <|"lambda" -> lamb /. solLamb, "grid" -> listlamb|>,
-    True,
-      Failure["OutOfRange", <|"grid" -> listlamb, "root" -> First[lamb /. solLamb]|>]
+	solLamb === {},
+		Failure["NoRoot", <|"grid" -> listlamb|>],
+	lambMin <= (lamb /. solLamb) <= lambMax,
+		<|"lambda" -> lamb /. solLamb, "grid" -> listlamb|>,
+	True,
+		Print["OutOfRange!!!!"];
+		Failure["OutOfRange", <|"grid" -> listlamb, "root" -> lamb /. solLamb|>]
   ]
 ];
 
@@ -98,3 +101,24 @@ RefineFindFirstLamb[n_, k_, lambWindow_, stage1_, stage2_, frob1_, frob2_: Autom
   FindFirstLamb[n, k, refinedWindow, stage2, Replace[frob2, Automatic -> frob1]]
 ]; 
 
+makeKGrid[kStart_, stepSize_, nPoints_] := Subdivide[kStart, kStart - stepSize*nPoints, nPoints];
+
+
+trackMode[n_, kGrid_, NarrowLambWindow_, stage_, lambdaseeds_, frob_] := Module[
+	{window = NarrowLambWindow, newlamb},
+	lambdaSeed = lambdaseeds[n];
+	listkLamb = {{kGrid[[1]], lambdaSeed}};
+	Print["in trackMode. lambdaSeed = ", lambdaSeed];
+	Print["listkLamb = ", kGrid];
+
+	window["center"] =  lambdaSeed;
+	
+	Do[
+		newlamb = FindFirstLamb[n, newk, window, stage, frob]["lambda"];
+		window["center"] =  newlamb;
+		AppendTo[listkLamb, {newk, newlamb}]
+		Print[listkLamb];
+	,{newk, Rest[kGrid]}];
+
+	listkLamb
+];
