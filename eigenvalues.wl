@@ -1,6 +1,8 @@
 
 RootFolder = DirectoryName[ExpandFileName[$InputFileName]];
+Get[FileNameJoin[{RootFolder, "tools", "equation.wl"}]];
 Get[FileNameJoin[{RootFolder, "tools", "solver.wl"}]];
+Get[FileNameJoin[{RootFolder, "tools", "modes.wl"}]];
 Get[FileNameJoin[{RootFolder, "config.wl"}]];
 
 kInitial = 1/100;
