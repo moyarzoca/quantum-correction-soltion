@@ -5,6 +5,12 @@ Get[FileNameJoin[{RootFolder, "tools", "solver.wl"}]];
 Get[FileNameJoin[{RootFolder, "tools", "modes.wl"}]];
 Get[FileNameJoin[{RootFolder, "config.wl"}]];
 
+Get[FileNameJoin[{RootFolder, "tools", "export.wl"}]];
+runCfg = setupRunDirectory[RootFolder, outputConfig];
+runDir = runCfg["dir"];
+logStream = OpenWrite[FileNameJoin[{runDir, outputConfig["logFile"]}]];
+AppendTo[$Output, logStream];
+
 
 frob = makeFrobeniusSolver[fineStage["orden"]];
 
@@ -38,8 +44,11 @@ clock = AbsoluteTiming[
 
 Print["Running of the modes computed in ", clock[[1]], " sec."];
 
-Export[FileNameJoin[{RootFolder, "output", "evolutions.wl"}], evolutionsN, "WL"];
-Export[FileNameJoin[{RootFolder, "output", "fits.wl"}], fitsN, "WL"];
+Export[FileNameJoin[{runDir, outputConfig["evolutionsFile"]}], evolutionsN, "WL"];
+Export[FileNameJoin[{runDir, outputConfig["fitsFile"]}], fitsN, "WL"];
+
+(*Close log stream*)
+Close[logStream];
 
 Print["** Done"];
 

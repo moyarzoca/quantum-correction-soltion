@@ -34,3 +34,12 @@ NpointsInk = 40;
 
 narrowLambWindow = <|"width" -> 1/80, "Npoints" -> 30|>;
 
+(*Output configuration*)
+outputConfig = <|
+  "baseDir" -> "output",
+  "evolutionsFile" -> "evolutions.wl",
+  "fitsFile" -> "fits.wl",
+  "logFile" -> "run.log"
+|>;
+
+
