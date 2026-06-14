@@ -71,7 +71,7 @@ FindFirstLamb[n_, k_, lambWindow_, stage_, frob_] := Module[
 
   interp = Interpolation[listlamb];
   solLamb = FindRoot[interp[lamb], {lamb, lambWindow["center"]}];
-  Print[(lamb /. solLamb)];
+  Print["  partial λ = ", (lamb /. solLamb), "  k = ", N[k], "  n = ", n];
 
   (*Print[Image[ListPlot[listlamb]]];*)
 
@@ -108,8 +108,6 @@ trackMode[n_, kGrid_, NarrowLambWindow_, stage_, lambdaseeds_, frob_] := Module[
 	{window = NarrowLambWindow, newlamb},
 	lambdaSeed = lambdaseeds[n];
 	listkLamb = {{kGrid[[1]], lambdaSeed}};
-	Print["in trackMode. lambdaSeed = ", lambdaSeed];
-	Print["listkLamb = ", kGrid];
 
 	window["center"] =  lambdaSeed;
 	
@@ -117,7 +115,6 @@ trackMode[n_, kGrid_, NarrowLambWindow_, stage_, lambdaseeds_, frob_] := Module[
 		newlamb = FindFirstLamb[n, newk, window, stage, frob]["lambda"];
 		window["center"] =  newlamb;
 		AppendTo[listkLamb, {newk, newlamb}]
-		Print[listkLamb];
 	,{newk, Rest[kGrid]}];
 
 	listkLamb
